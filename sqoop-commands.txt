@@ -1,0 +1,36 @@
+*** Sqoop Commands ***
+======================
+
+# start
+n/a
+
+# stop
+n/a
+
+# help
+sqoop help import
+sqoop help export
+
+# show databases
+sqoop list-databases --connect jdbc:mysql://localhost --username root --password cloudera
+
+# show tables
+sqoop list-tables --connect jdbc:mysql://localhost/nifty --username root -P
+
+# import data ... read from mysql & store to hdfs -- check map reduce job
+sqoop import --connect jdbc:mysql://localhost/nifty --username root -P --table nifty --m 1 --target-dir /myhdfs/nifty
+sqoop import --connect jdbc:mysql://localhost/nifty --username root -P --table nifty --m 1 --target-dir /myhdfs/nifty-20141201 --where "date ='2014-12-01'"
+
+# import data ... read from mysql & store to hive -- check map reduce job
+hive > create database nifty;
+sqoop import --connect jdbc:mysql://localhost/nifty --username root -P --table nifty --hive-import --hive-table nifty.nifty  --m 1
+
+# export data ... read from hdfs & store to mysql -- check map reduce job
+sqoop export --connect jdbc:mysql://localhost/hr --username root -P --table employee --export-dir /myhdfs/employee
+sqoop export --connect jdbc:mysql://localhost/hr --username root -P --table employee --export-dir /myhdfs/employee --input-fields-terminated-by ',' --lines-terminated-by '\n'
+
+# export data ... read from hive & store to mysql -- check map reduce job
+# hive data resides in HDFS at /user/hive/warehouse/tableName; 
+# important - as the field delimiter mostly ',' is used, however at times hive uses '\01' i.e. '^A'; so check before command is fired 
+# important - mostly '\n' as the line terminator; so check before command is fired
+sqoop export --connect jdbc:mysql://localhost/hr --username root -P --table emp_data --export-dir /user/hive/warehouse/hr.db/employee --input-fields-terminated-by ',' --lines-terminated-by '\n'

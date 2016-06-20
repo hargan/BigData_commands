@@ -1,0 +1,144 @@
+*** Hive Commands ***
+=====================
+
+### start
+hive
+beeline -u jdbc:hive2://
+
+### quit
+quit
+!quit
+
+### intro
+show databases; use <db-name>; show tables; desc <table-name>;
+DDL - create table, create view, create index
+DML - select, where, group by, order by, joins
+
+### databases / tables
+show databases;
+use default;
+show tables;
+
+### databases hr - data loaded from local-fs & stored in hive warehouse
+### simple / basic queries 
+### understand what runs as mr-jobs
+create database hr;
+use hr;
+create table employee (emp_id string, emp_name string, salary float, status int) row format delimited fields terminated by ',' lines terminated by '\n';
+load data local inpath '/home/cloudera/myfiles/hive-employee.csv' overwrite into table employee; 
+desc employee;
+select * from employee;
+select * from employee where salary >= 5000;
+select * from employee where salary = 2000;
+select * from employee where emp_name like 'cyrus';
+select * from employee where emp_name like 'cyrus%';
+select * from employee where emp_name like 'Cyrus%';
+select * from employee where emp_name like '%ta%';
+select * from employee order by emp_name;  #note - run as mr-job
+select count(*) from employee; #note - run as mr-job
+select count(*) from employee where salary = 2000; #note - run as mr-job
+select salary, count(*) from employee group by salary;
+select max(salary) as maxsal, min(salary) as minsal from employee;
+EXPLAIN select salary, count(*) from employee group by salary;
+
+### export table to hdfs
+export table employee to '/myhdfs/emp-check';
+
+### databases sales - data loaded from local-fs & stored in hive warehouse
+### important join queries 
+### understand what runs as mr-jobs
+create database sales;
+use sales;
+create table sales (name string, itemid int) row format delimited fields terminated by ',';
+create table items (itemid int, itemname string) row format delimited fields terminated by ',';
+load data local inpath '/home/cloudera/myfiles/hive-sales.csv' into table sales;
+load data local inpath '/home/cloudera/myfiles/hive-items.csv' into table items;
+desc sales;
+desc items;
+select sales.*, items.* from sales join items on (sales.itemid = items.itemid);
+create table joint as select sales.name, items.* from sales join items on (sales.itemid = items.itemid);
+select sales.*, items.* from sales LEFT OUTER JOIN items on (sales.itemid = items.itemid);
+select sales.*, items.* from sales RIGHT OUTER JOIN items on (sales.itemid = items.itemid);
+select sales.*, items.* from sales FULL OUTER JOIN items on (sales.itemid = items.itemid);
+
+### understand
+# where data is stored in hive warehouse
+# /user/hive/warehouse
+# check sales.db
+# check hr.db
+
+### databases cars - data loaded from hdfs & stored in hive warehouse
+### understand hive warehouse tables & externale tables
+### first hive warehouse table
+hdfs dfs -mkdir /hive
+hdfs dfs -mkdir /hive/cars
+hdfs dfs -put /home/cloudera/myfiles/hive-cars.csv /hive/cars
+#cols - name,mpg,cyl,disp,hp,wt,gear,carb
+create database cars1;
+use cars1;
+create table cars (name string, mpg float, cyl int, disp float, hp int, wt float, gear int, carb int) row format delimited fields terminated by ',';
+load data inpath '/hive/cars/hive-cars.csv' into table cars;
+select * from cars;
+desc cars
+
+### understand
+# where data is stored in hdfs
+# /hive/cars            - # why is hive-cars.db not present?
+# /user/hive/warehouse  - # cars1.db - entire data available
+
+### now external table
+hdfs dfs -put /home/cloudera/myfiles/hive-cars.csv /hive/cars
+#cols - name,mpg,cyl,disp,hp,wt,gear,carb
+create database cars2;
+use cars2;
+create external table cars (name string, mpg float, cyl int, disp float, hp int, wt float, gear int, carb int) row format delimited fields terminated by ',' location '/hive/cars';
+#note - hdfs folder & not file to be spcified ... no need to load data
+select * from cars;
+desc cars
+
+### understand
+# where data is stored in hdfs
+# /hive/cars            - hive-cars.csv present?
+# /user/hive/warehouse  - cars2.db empty
+
+### hive meta store
+mysql -uroot -pclouderashow databases;
+use metastore;
+select * from DBS;
+select * from TBLS;
+
+### databases hr - alter table
+use hr;
+#create table employee (emp_id string, emp_name string, salary float, status int) row format delimited fields terminated by ',' lines terminated by '\n';
+show tables;
+desc employee;
+alter table employee rename to emp_data;
+show tables;
+desc emp_data;
+alter table emp_data add columns (age int, mob_numb string);
+desc emp_data;
+alter table name drop column age;
+desc emp_data;
+alter table name change mob_numb mobile string;
+desc emp_data;
+
+### databases hr - drop table / drop db
+use hr;
+#create table employee (emp_id string, emp_name string, salary float, status int) row format delimited fields terminated by ',' lines terminated by '\n';
+show tables;
+drop table emp_data;
+show tables;
+use default;
+show databases;
+drop database hr;
+show databases;
+
+*** assignment - nifty ***
+==========================
+create table 
+load data local inpath 
+select * 
+show all rows with highest HighPrice for each script
+show all rows with lowest LowPrice for each script
+show all Volatility Index for each row [ Volatility Index = HighPrice - LowPrice / ((HighPrice + LowPrice)/2) ]
+show all Highest Volatility Index for each script [ Volatility Index = HighPrice - LowPrice / ((HighPrice + LowPrice)/2) ]

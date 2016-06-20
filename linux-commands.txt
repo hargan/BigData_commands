@@ -1,0 +1,161 @@
+*** Linux Commands ***
+======================
+
+*** Who Am I 
+whoami
+
+*** su
+su cloudera
+pwd
+su root
+pwd
+logout
+
+*** version
+cat /proc/version 
+cat /etc/redhat-release
+
+*** ip address of machine
+ifconfig
+ip addr show
+
+*** change password
+su root
+passwd username
+exit
+
+*** cd / mkdir
+cd /home/cloudera
+mkdir linux
+cd linux
+cd ..
+cd ..
+cd /home/cloudera/linux
+cd /
+cd /home/cloudera/linux
+
+*** create file
+create <test-file.txt> [using gedit]
+
+*** list 
+ls 
+ll
+# discuss permissions
+
+*** cat
+cat test-file.txt
+
+*** copy
+cp --help
+cp test-file.txt new-test.txt
+ll
+cp -i test-file.txt new-test.txt
+ll
+cp ../myfiles/*.txt .
+ll
+cp ../myfiles/* .
+ll
+cp -a ../myfiles/*.csv .
+ll
+cp -a ../myfiles/*.txt .
+ll
+cp -r ../myfiles/* .
+ll
+
+*** delete / rmdir
+rm --help
+rm shakespeare.tar.gz
+ll
+rm bigdata.zip
+ll
+ll ./bigdata/
+rm bigdata/*
+ll ./bigdata/
+rmdir bigdata
+ll
+ll shakespeare/
+ll shakespeare/comedies/
+rm -rf shakespeare/ ### very careful
+ll
+
+*** move
+mv --help
+mv hive-cars.csv have-cars.csv
+mv hive*.csv have*.csv ### error
+cd ..
+mkdir test
+cd test
+mv ../linux/hive*.csv .
+ll
+cd ../linux
+ll
+
+*** delete & remove folder
+mv ../test/* .
+rmdir ../test
+ll ../
+
+*** head / tail
+head ../myfiles/bigdata/tweets.txt
+head -5 ../myfiles/bigdata/tweets.txt
+tail ../myfiles/bigdata/tweets.txt
+tail -5 ../myfiles/bigdata/tweets.txt
+
+*** more
+cat ../myfiles/bigdata/tweets.txt | more
+more ../myfiles/bigdata/tweets.txt
+
+*** chown
+su -root
+ll
+chown root.root test-file.txt
+ll
+chown couldera.cloudera test-file.txt
+ll
+exit
+
+*** chmod
+ll
+chmod 664 test-file.txt
+ll
+chmod 666 test-file.txt
+ll
+
+*** du
+du -h ../myfiles/
+
+*** df
+df -h
+
+*** create archive:
+tar -cvzf compfile.tar.gz have-cars.csv 
+tar -tzvf compfile.tar.gz
+tar -cvzf compfile.tar.gz *.txt
+tar -tzvf compfile.tar.gz
+tar -cvzf compfile.tar.gz ../myfiles/*
+tar -tzvf compfile.tar.gz
+
+*** extract contents for this archive
+mkdir
+data
+ll
+tar -zxvf compfile.tar.gz .
+ll
+
+*** view a detailed table of contents (list all files) for this archive
+tar -tzvf compfile.tar.gz
+
+*** use gedit
+make datafile.txt [this is test data. (rep=30)]
+
+*** top
+top
+
+*** logout / login
+exit
+logout 
+login cloudera
+
+*** shutdown
+shutdown -h     # immediate shutdown 
+shutdown -r	# immediate shutdown & restart

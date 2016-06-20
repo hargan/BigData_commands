@@ -1,0 +1,86 @@
+*** HDFS Commands ***
+=====================
+
+*** must be root for this
+su root
+#password = training
+
+*** version
+yarn version
+hdfs version
+hadoop version (deprecated)
+
+*** mkdir
+hdfs dfs -mkdir /myhdfs
+#browse hdfs folder
+
+*** copy from local to hdfs
+hdfs dfs -put /home/cloudera/myfiles/datafile.txt  /myhdfs/datafile.txt 
+hdfs dfs -ls  /myhdfs   
+#browse hdfs folder
+
+*** copy from hdfs to local
+hdfs dfs -get /myhdfs/datafile.txt /home/cloudera/myfiles/testfile.txt   
+hdfs dfs -ls  /myhdfs   
+#browse hdfs folder
+ls /home/cloudera/myfiles/
+cat /home/cloudera/myfiles/testfile.txt
+
+*** copy from hdfs to hdfs
+hdfs dfs -cp  /myhdfs/datafile.txt /myhdfs/newfile.txt
+#browse hdfs folder
+
+*** move from hdfs to hdfs
+hdfs dfs -mv  /myhdfs/newfile.txt  /myhdfs/oldfile.txt
+#browse hdfs folder
+
+*** copy from hdfs to hdfs
+hdfs dfs -cp  /myhdfs/datafile.txt /myhdfs/newfile.txt
+hdfs dfs -cp  /myhdfs/datafile.txt /myhdfs/testfile.txt
+hdfs dfs -cp  /myhdfs/datafile.txt /myhdfs/delfile.txt
+#browse hdfs folder ... check block size
+
+*** hdfs ls / ll#
+hdfs dfs -ls  /myhdfs   
+hdfs dfs -ll  /myhdfs   
+
+*** hdfs ls / du
+hdfs dfs -ls  /myhdfs   
+hdfs dfs -du -h /myhdfs
+#note - difference between ls & du
+
+*** hdfs df
+hdfs dfs -du  /myhdfs
+
+*** delete file
+hdfs dfs -rm  /myhdfs/delfile.txt
+hdfs dfs -ls
+#browse hdfs folder
+
+*** rmdir
+hdfs dfs -mkdir /myhdfs/junk
+hdfs dfs -cp  /myhdfs/datafile.txt /myhdfs/junk/datafile.txt
+hdfs dfs -rm -r /myhdfs/junk	# cautions
+#browse hdfs folder
+
+*** cat file
+hdfs dfs -cat /myhdfs/datafile.txt
+
+*** head# / tail
+hdfs dfs -head /myhdfs/datafile.txt
+hdfs dfs -tail /myhdfs/datafile.txt
+
+*** chmod
+hdfs dfs -ls
+hdfs dfs -chmod 777 /myhdfs/datafile.txt
+hdfs dfs -ls
+hdfs dfs -chmod 644 /myhdfs/datafile.txt
+hdfs dfs -ls
+
+*** help
+hdfs dfs -help
+
+*** HDFS DFSADMIN
+hdfs dfsadmin -report
+hdfs fsck /myhdfs
+

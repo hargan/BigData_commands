@@ -1,0 +1,93 @@
+*** Pig Commands - Interactive Mode***
+======================================
+
+*** subscriber - count bytes exercise ***
+*** =====================================
+  
+### hdfs commands
+su root
+hdfs dfs -mkdir /mypig
+hdfs dfs -mkdir /mypig/subscriber
+hdfs dfs -mkdir /mypig/subscriber/input
+hdfs dfs -put /home/cloudera/myfiles/pig_subscriber.txt  /mypig/subscriber/input
+
+### pig commands
+### sum bytes of Subscriber 
+A = load '/mypig/subscriber/input' as (line:chararray);
+B = foreach A generate (chararray)SUBSTRING(line,15,26) as id , (double)SUBSTRING(line,87,97) as bytes;
+C = group B by id;
+D = foreach C generate group, SUM(B.bytes);
+dump D;
+store D into '/mypig/subscriber/output'; 
+
+### pig commands
+### sum bytes of subscriber & sort by download bytes 
+A = load '/mypig/subscriber/input' as (line:chararray);
+B = foreach A generate (chararray)SUBSTRING(line,15,26) as id , (double)SUBSTRING(line,87,97) as bytes;
+C = group B by id;
+D = foreach C generate group, SUM(B.bytes);
+E = foreach D generate $1 as bytes, $0 as id; 
+F = order E by bytes desc;
+dump F;
+store F into '/mypig/subscriber/outputsorted'; 
+
+
+*** pig test data - word count exercise ***
+*** =======================================
+
+### hdfs commands
+su root
+hdfs dfs -mkdir /mypig
+hdfs dfs -mkdir /mypig/wordcount
+hdfs dfs -mkdir /mypig/wordcount/input
+hdfs dfs -put   /home/cloudera/myfiles/datafile.txt  /mypig/wordcount/input
+
+### pig commands
+### word count 
+A1 = load '/mypig/wordcount/input' as (line:chararray);
+A2 = foreach A1 generate TOKENIZE(line) as tokens;
+A3 = foreach A2 generate flatten(tokens) as words;
+A4 = group A3 by words;
+A5 = foreach A4 generate group, COUNT(A3);
+A6 = order A5 by $1 desc;
+dump A6;
+
+
+*** pig udf tutorial ***
+*** ====================
+
+### hdfs commands
+hdfs dfs -mkdir /mypig/excite
+hdfs dfs -mkdir /mypig/excite/input
+hdfs dfs -put   /home/cloudera/myfiles/excite-small.log  /mypig/excite/input
+
+### pig commands
+### refer pig-script.pig  
+
+
+*** Pig Commands - Command Line Mode***
+=======================================
+
+### pig commands
+### command line mode 
+### =================================================
+cd  /home/cloudera/mycommands
+pig pic-wc.pig
+pig /home/cloudera/mycommands/pig-wc.pig
+
+### pig commands
+### command line mode 
+### =================================================
+pig 
+grunt> run /home/cloudera/mycommands/pig-wc.pig
+
+
+*** assignment - shakespeare ***
+===============================
+intro to piggybank.jar
+put
+ls
+#browse shakespeare folder
+word_count for entire data
+grep for "love" in entire data
+grep for "death" in entire data

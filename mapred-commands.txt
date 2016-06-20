@@ -1,0 +1,44 @@
+*** Map Reduce Commands ***
+===========================
+
+*** must be root for this
+su root
+
+*** prepare
+cd /home/cloudera/myjars
+hdfs dfs -put /home/cloudera/myfiles/un_profile.txt  /myhdfs/un_profile.txt 
+hdfs dfs -ls  /myhdfs   
+
+*** run java map-reduce programs
+###hadoop jar <jar-file-name.jar> <class-file-name-which-contains-main> <input-folder-location> <out-put-folder-location>
+hadoop jar hadoop-examples.jar wordcount /myhdfs/un_profile.txt /myhdfs/un_profile_wc
+hadoop jar hadoop-examples.jar grep /myhdfs/un_profile.txt /myhdfs/un-profile_go1 'the'
+hadoop jar hadoop-examples.jar grep /myhdfs/un_profile.txt /myhdfs/un-profile_go1 '[the]'
+hadoop jar hadoop-examples.jar grep /myhdfs/un_profile.txt /myhdfs/un-profile_go2 '[the]+'
+hadoop jar hadoop-examples.jar pi 2 100000
+# run again check what happens
+hdfs dfs -rm -r /myhdfs/datafile_wc				#caution
+hdfs dfs -rm -r /myhdfs//myhdfs/grep_output		#caution
+
+*** run java map-reduce bencmarks
+hadoop jar hadoop-test.jar mrbench -numRuns 3 -maps 2 -reduces 1
+hadoop jar hadoop-test.jar mrbench -numRuns 3 -maps 5 -reduces 2
+
+*** run java name-node bencmarks
+hadoop jar hadoop-test.jar nnbench -operation create_write -maps 5 -reduces 2 -blockSize 1 -bytesToWrite 0 -numberOfFiles 10 -readFileAfterOpen true
+
+*** bigdata
+hdfs dfs -put /home/cloudera/myfiles/bigdata/* /myhdfs/bigdata/
+hdfs dfs -ls  /myhdfs/bigdata/
+#browse /myhdfs/bigdata/ folder
+hadoop jar hadoop-examples.jar wordcount /myhdfs/bigdata/all.txt /myhdfs/bigdata/all_wc 
+hadoop jar hadoop-examples.jar wordcount /myhdfs/bigdata/ /myhdfs/bigdata/bigdata_wc 
+   
+*** assignment - shakespere
+put
+ls
+#browse shakespere folder
+word_count for entire data
+grep for love in entire data
+grep for death in entire data
+
